@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dog Parent Quiz</title>
+<meta name="description" content="Are you the dog parent your pet thinks you are? Take the quiz to discover how your habits, love, and awareness shape your dog’s wellbeing.">
+
+<link rel="icon" href="img/favicon.png" type="image/svg+xml">
+<meta property="og:title" content="Heart Test for Dog Parents">
+<meta property="og:description" content="Your dog depends on more than love. Find out how emotionally in tune and prepared you really are in this revealing heart test for dog parents.">
+<meta property="og:image" content="img/ogimage.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://homemeds-web.github.io/view/">
+
+<!-- Font Awesome for play icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NETVFPHYT6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NETVFPHYT6');
+</script>
+
+<!-- GSAP for play button animation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<!-- Vimeo Player API -->
+<script src="https://player.vimeo.com/api/player.js"></script>
+
+<style id="base-styles">
+  /* Local font (keep your poppins.ttf in same folder) */
+  @font-face {
+    font-family: 'Poppins';
+    src: url('poppins.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root{
+    /* theme: change once here or via surveyConfig.themeColor */
+    --primary-color: #32a852;
+    --primary-color-light: rgb(231, 248, 236); /* runtime override */
+    --error-color: #e53935;
+    --error-light: rgba(229,57,53,0.12);
+    --comment-text-color: #1a1a1a;
+    --body-bg: #f0f2f5;
+    --text-color-primary: #2e2e2e;
+    --text-color-secondary: #333;
+    --placeholder-color: #999;
+    --input-bg: #f5f6f7;
+    --input-border: #ddd;
+    --input-hover-bg: #e4e6eb;
+    --desc-color: #616161; /* question description color */
+
+    /* radius (global) */
+    --radius: 8px;
+
+    /* button typography variables */
+    --btn-font-weight: 700;
+    --btn-line-height: 1;
+
+    /* font size variables (defaults) */
+    --fs-question: 1.1em;
+    --fs-desc: 0.95em;
+    --fs-answer: 1em;
+    --fs-input: 1em;
+    --fs-input-label: 0.95em;
+    --fs-comment: 1em;
+    --fs-btn-main: 1em;
+    --fs-btn-sub: 0.82em;
+    --fs-disclaimer: 11px;
+    --fs-copyright: 12px;
+
+    /* footer / disclaimer variables */
+    --disclaimer-font-size: var(--fs-disclaimer);
+    --copyright-font-size: var(--fs-copyright);
+    --footer-max-width: 300px;
+    --footer-color: #7a7a7a;
+
+    /* app font family, can be changed by surveyConfig */
+    --app-font-family: 'Poppins', Arial, sans-serif;
+
+    /* default media aspect if not specified in question */
+    --default-media-aspect: 16/9;
+  
+    /* Add these inside your existing :root block */
+    --card-bg: #fff;                     /* default card background */
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.1); /* default card shadow */
+    --card-border: none;                 /* default card border */
+    --card-radius: 8px;                  /* card corner radius (used sitewide) */
+
+  }
+
+  /* Make sizing predictable and ensure media never overflow */
+  *, *::before, *::after { box-sizing: border-box; }
+  img, picture, video, iframe { max-width: 105%; height: auto; display: block; }
+
+  /* ensure body fills viewport for sticky footer to work */
+  html, body { height: 100%; }
+  html { font-family: var(--app-font-family); }
+  body {
+    background: var(--body-bg);
+    color: var(--text-color-secondary);
+    margin: 0;
+    padding: 14px 12px;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 60px;
+    /* keep same visual centering but avoid horizontal overflow on small screens */
+  }
+
+  /* ===== Force primary app font onto all form controls and buttons ===== */
+  input,
+  textarea,
+  select,
+  button,
+  label,
+  .option-btn,
+  .input-wrapper input,
+  .input-wrapper button,
+  .next-btn,
+  .next-btn .btn-main,
+  .next-btn .btn-sub,
+  .survey-footer,
+  .survey-footer * {
+    font-family: var(--app-font-family) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Ensure option buttons match app font */
+  .option-btn, .option-btn.selected { font-family: var(--app-font-family) !important; }
+
+  /* Ensure Next button text uses the app font */
+  .next-btn, .next-btn .btn-main, .next-btn .btn-sub { font-family: var(--app-font-family) !important; }
+
+  .survey-card{
+    width:min(600px, 100%); max-width:100%; background: var(--card-bg);; border-radius: var(--card-radius);
+    padding:20px 10px 5px 10px; box-sizing:border-box; box-shadow: var(--card-shadow);
+    display:flex; flex-direction:column; gap:12px; place-self: start center;
+    flex: 0 0 auto; margin: 50px 15px 10px 15px;
+  }
+
+  /* IMAGE (fallback) */
+  .question-image{ width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:var(--radius); display:none; }
+
+  .question{ font-weight:700; font-size:var(--fs-question); color:var(--text-color-primary); margin-bottom: -15px; }
+
+  /* description */
+  .question-desc { font-size:var(--fs-desc); color: var(--desc-color); margin-top: 0px; margin-bottom: -7px; line-height:1.35; display: none; }
+
+  /* VIDEO wrapper: we'll populate this dynamically per question */
+  .video-wrapper { width:100%; aspect-ratio:16/9; border-radius:var(--radius); overflow:hidden; background:#000; display:none; position:relative; }
+  .video-poster { width:100%; height:100%; object-fit:cover; display:block; transform-origin:center center; will-change: transform, opacity; border-radius:var(--radius); }
+  .question-video { width:100%; height:100%; border:0; display:none; border-radius:var(--radius); }
+
+  /* play overlay button */
+  .poster-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(1); width:72px; height:72px; border-radius:50%; background: rgba(0,0,0,0.62); display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; z-index: 3; transition: transform 160ms ease, opacity 180ms ease; -webkit-tap-highlight-color: transparent; }
+  .poster-play i { color: #fff; font-size: 28px; line-height:1; }
+  @media (max-width:480px) { .poster-play { width:56px; height:56px; } .poster-play i { font-size:20px; } }
+
+/* ---------- Inline media styling (match question media) ---------- */
+/* Uses the same aspect default as question media via --media-aspect */
+.inline-media,
+.inline-video-wrapper {
+  width: 100%;
+  aspect-ratio: var(--media-aspect, 16/9);
+  border-radius: var(--card-radius, 6px);
+  overflow: hidden;
+  display: block;
+  margin: 12px 0;
+  background: #000;
+  position: relative;
+}
+
+/* Inline image */
+.inline-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Inline poster (video placeholder) */
+.inline-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/* Inline iframe (hidden until play) */
+.inline-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: none;
+}
+
+/* Reuse poster-play visual (slightly adapted for inline) */
+.inline-poster-play, .poster-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%) scale(1);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 160ms ease, opacity 180ms ease;
+}
+.inline-poster-play i { color: #fff; font-size: 28px; line-height:1; }
+@media (max-width:480px) {
+  .inline-poster-play { width:56px; height:56px; }
+  .inline-poster-play i { font-size:20px; }
+}
+
+/* ensure inline media inherit same card radius variable and sizing */
+.inline-media, .inline-video-wrapper, .inline-image, .inline-poster, .inline-iframe {
+  border-radius: var(--card-radius, 6px);
+}
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+
+  .option-btn, .input-wrapper{
+    padding:10px 15px; border-radius:var(--radius); border:1px solid var(--input-border);
+    background:var(--input-bg); transition:all .18s ease; color:var(--text-color-secondary); font-size:var(--fs-answer);
+  }
+
+  .option-btn{ cursor:pointer; user-select:none; }
+  .option-btn:hover{ background:var(--input-hover-bg); }
+
+  .option-btn.selected,
+  .input-wrapper.locked{ border-color:var(--primary-color); background:var(--primary-color-light); color:var(--text-color-primary); font-weight:700;}
+
+  /* ERROR STATE */
+  .input-wrapper.error { border-color: var(--error-color); background: var(--error-light); }
+  .comment.error { background: var(--error-light); color: var(--error-color); display:block; }
+
+  .input-wrapper{ position:relative; display:flex; align-items:center; }
+  .input-wrapper input{
+    flex:1; border:none; outline:none; background:transparent; font-size:var(--fs-input); color:var(--text-color-secondary);
+    font-style: normal; font-weight: normal; font-family: var(--app-font-family) !important;
+  }
+  .input-wrapper input::placeholder{ font-style:italic; color:var(--placeholder-color); font-family: var(--app-font-family) !important;}
+  .input-wrapper.locked input{ font-weight:var(--btn-font-weight); color:var(--text-color-primary); }
+
+  .input-wrapper button{
+    display:none; position:absolute; right:8px; background:var(--primary-color); font-weight: 600;
+    color:#fff; border:none; padding:5px 8px; border-radius:calc(var(--radius) / 1.5); font-size:0.85em; 
+    cursor:pointer; font-family: var(--app-font-family) !important; 
+  }
+
+  /* COMMENT tweaks: remove extraneous spacing below text, set snug line-height */
+  .comment{
+    display:none; padding:10px; border-radius:var(--radius); background:transparent; color:var(--comment-text-color);
+    line-height: 1.25; font-size:var(--fs-comment);
+  }
+  .comment p{ margin: 0 5px 0 5px; } /* ensure no extra bottom margin inside comment box */
+
+  /* anchors in rich text should inherit color and not be underlined by default */
+  .question a, .question-desc a, .comment a, .survey-footer a { color: inherit; text-decoration: none; }
+
+  /* Next button base + disabled-class for 'disabled' mode */
+  .next-btn{
+    display:none; width:100%; padding:12.5px 15px; border-radius:var(--radius); border:none;
+    background:var(--primary-color); color:#fff; cursor:pointer; font-size:var(--fs-btn-main);
+    font-weight: var(--btn-font-weight); line-height: var(--btn-line-height); text-align:center;
+    display:flex; flex-direction:column; gap:2px; align-items:center; justify-content:center;
+  }
+  .next-btn .btn-main{ font-size:var(--fs-btn-main); font-weight:var(--btn-font-weight); line-height:1; }
+  .next-btn .btn-sub{ font-size:var(--fs-btn-sub); opacity:0.9; margin-top: -2px; }
+  .next-btn:disabled, #nextBtn.disabled-next { opacity:0.6; cursor:not-allowed; pointer-events: none;}
+  .next-btn:hover{ filter:brightness(.95); }
+
+  /* Rich text defaults for lists/paragraphs in question/description/comments */
+  .question p { margin: 0px 0 12px; }
+  .question-desc p { margin: 0px 0 8px; }
+  .question ul, .question ol,
+  .question-desc ul, .question-desc ol,
+  .comment ul, .comment ol { margin: 0 0 8px 1.25em; padding-left: 1.25em; }
+
+  
+  .question li, .question-desc li { margin: 2px 0 0 1.17em; }
+  .comment li { margin: 2px 0 0 1.4em; }
+
+
+  .question code, .question-desc code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.9em; background: rgba(0,0,0,.05); padding: 1px 4px; border-radius: 4px; }
+  .question kbd, .question-desc kbd { font-family: inherit; background: #f4f4f4; border: 1px solid #ddd; border-bottom-width: 2px; padding: 0 4px; border-radius: 4px; }
+
+  /* Footer / disclaimer - sticky when short page */
+  .survey-footer { place-self: start center; width:100%; max-width: var(--footer-max-width); margin: 12px auto auto; text-align: center; color: var(--footer-color); display:flex; flex-direction:column; gap:6px; }
+  .survey-footer .disclaimer { font-size: var(--fs-disclaimer); line-height:1.1; margin-bottom: -25px; color: var(--footer-color); }
+  .survey-footer .copyright { font-size: var(--fs-copyright); color: var(--footer-color); margin-bottom: 5px;}
+
+  @media (max-width:480px){ .question{ font-size: calc(var(--fs-question) - .08em); } }
+
+  /* ===== embedded iframe styles (from external embed doc) ===== */
+  #iframeEmbedHeading { margin: 20px 0 0px; font-weight:700; font-size:1.3em; color:var(--text-color-primary); 
+                        margin-bottom: -45px; flex-direction:column; gap:12px; place-self: start center;}
+  #theFrame {
+    display: block;
+    border: 0;
+    overflow: hidden;
+    width: 100%; flex-direction:column; place-self: start center;
+    transition: height 0.25s ease, width 0.25s ease;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- header removed as requested -->
+
+<div class="survey-card" id="survey-card" aria-live="polite">
+  <img src="" alt="Question Image" class="question-image" id="questionImage" />
+  <div class="video-wrapper" id="videoWrapper" aria-hidden="true"></div>
+
+  <div class="question" id="question-text"></div>
+  <div class="question-desc" id="question-desc" aria-hidden="true"></div>
+
+  <div class="options" id="options"></div>
+  <div class="comment" id="comment"></div>
+
+  <button class="next-btn" id="nextBtn" type="button" aria-label="Next">
+    <span class="btn-main"></span>
+    <span class="btn-sub"></span>
+  </button>
+</div>
+
+<h2 id="iframeEmbedHeading">Comments Section</h2>
+<iframe id="theFrame" src="page.html" title="embedded page"></iframe>
+
+<div class="survey-footer" aria-hidden="false">
+  <div id="surveyDisclaimer" class="disclaimer" aria-hidden="true"></div>
+  <div id="surveyCopyright" class="copyright" aria-hidden="true"></div>
+</div>
+
+<script src="questions.js"></script>
+<script>
+/* ====== CONFIG: set your Apps Script endpoint & sheet info here ====== */
+const FORM_ACTION_URL = "https://script.google.com/macros/s/AKfycbwtrtjhFabhC-4HgqHNCT1k3TLwAXtY8aUCi9zrl0CvzFOTyVcTAEyR_ZkQ702pKSpcHw/exec";
+const SHEET_ID = "1YkDZMrLjkylqmDD5J3kNQcRXoSkUGOAi-EzkA1h8L4E";
+const SHEET_NAME = "Sheet2";
+const TIMEZONE = "Africa/Lagos";
+/* NEXT button mode: 'hidden' => invisible until valid; 'disabled' => always visible but grayed/disabled until valid */
+const NEXT_BUTTON_MODE = 'disabled'; // change to 'hidden' if you prefer that behavior
+
+/* DEFAULT TEXTS */
+const DEFAULT_WAITING_TEXT = "waiting. . .";  // fallback waiting text when Next is disabled and no question waitingbutton
+const DEFAULT_NEXT_TEXT = "next";           // fallback next button when enabled and no custom buttontext
+/* ================================================================== */
+
+/* Helper: get surveyConfig if provided in questions.js */
+function getSurveyConfig(){
+  try {
+    if (typeof surveyConfig !== 'undefined') return surveyConfig;
+  } catch(e){}
+  try {
+    if (window && window.surveyConfig) return window.surveyConfig;
+  } catch(e){}
+  return {};
+}
+
+/* THEME & FONT initialization */
+(function initTheme(){
+  const root = document.documentElement;
+  const cfg = getSurveyConfig();
+  const configColor = cfg.themeColor && String(cfg.themeColor).trim() ? String(cfg.themeColor).trim() : null;
+  const primary = configColor || getComputedStyle(root).getPropertyValue('--primary-color').trim() || '#10e032';
+  root.style.setProperty('--primary-color', primary);
+  root.style.setProperty('--primary-color-light', lightenColor(primary, 0.8));
+
+  if (cfg.pageRadius) root.style.setProperty('--radius', String(cfg.pageRadius));
+  if (cfg.defaultMediaAspect) root.style.setProperty('--default-media-aspect', cfg.defaultMediaAspect);
+
+  if (cfg.fontSizes && typeof cfg.fontSizes === 'object') {
+    const map = {
+      question: '--fs-question',
+      description: '--fs-desc',
+      answers: '--fs-answer',
+      input: '--fs-input',
+      inputLabel: '--fs-input-label',
+      comment: '--fs-comment',
+      btnMain: '--fs-btn-main',
+      btnSub: '--fs-btn-sub',
+      disclaimer: '--fs-disclaimer',
+      copyright: '--fs-copyright'
+    };
+    for (const key in cfg.fontSizes) {
+      if (!cfg.fontSizes[key]) continue;
+      const varName = map[key];
+      if (varName) root.style.setProperty(varName, String(cfg.fontSizes[key]));
+    }
+  }
+
+  if (cfg.fontFamily) {
+    const fam = String(cfg.fontFamily).trim();
+    if (cfg.fontUrl) {
+      const url = String(cfg.fontUrl).trim();
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @font-face {
+          font-family: '${CSS.escape(fam)}';
+          src: url('${url}') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+          font-display: swap;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    document.documentElement.style.setProperty('--app-font-family', `${fam}, Arial, sans-serif`);
+  }
+
+  try {
+    const disclaimerEl = document.getElementById('surveyDisclaimer');
+    const copyrightEl = document.getElementById('surveyCopyright');
+    if (disclaimerEl && cfg.disclaimer) {
+      disclaimerEl.innerHTML = renderRich(String(cfg.disclaimer));
+      disclaimerEl.setAttribute('aria-hidden', 'false');
+      initEmbeddedMedia(disclaimerEl).catch(()=>{});
+    } else if (disclaimerEl) {
+      disclaimerEl.innerHTML = '';
+      disclaimerEl.setAttribute('aria-hidden', 'true');
+    }
+    if (copyrightEl && cfg.copyright) {
+      copyrightEl.innerHTML = renderRich(String(cfg.copyright));
+      copyrightEl.setAttribute('aria-hidden', 'false');
+      initEmbeddedMedia(copyrightEl).catch(()=>{});
+    } else if (copyrightEl) {
+      copyrightEl.innerHTML = '';
+      copyrightEl.setAttribute('aria-hidden', 'true');
+    }
+  } catch(e){}
+})();
+function lightenColor(hex, amount){
+  hex = hex.replace('#','').trim();
+  if (hex.length === 3) hex = hex.split('').map(h=>h+h).join('');
+  let r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16);
+  r = Math.round(r + (255 - r) * amount);
+  g = Math.round(g + (255 - g) * amount);
+  b = Math.round(b + (255 - b) * amount);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+
+/* ================= RICH TEXT HELPERS (escape, inline formatting, lists) ================= */
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, ch => (
+    ch === '&' ? '&amp;' :
+    ch === '<' ? '&lt;'  :
+    ch === '>' ? '&gt;'  :
+    ch === '"' ? '&quot;': '&#39;'
+  ));
+}
+function sanitizeColor(val){
+  if (!val) return null;
+  const v = String(val).trim();
+  const hex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+  const named = /^(?:[a-z]+)$/i;
+  const rgb = /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}(?:\s*,\s*(?:0|0?\.\d+|1))?\s*\)$/i;
+  const hsl = /^hsla?\(\s*\d{1,3}\s*,\s*\d{1,3}%\s*,\s*\d{1,3}%(?:\s*,\s*(?:0|0?\.\d+|1))?\s*\)$/i;
+  if (hex.test(v) || rgb.test(v) || hsl.test(v) || named.test(v)) return v;
+  return null;
+}
+function sanitizeSize(val){
+  if (!val) return null;
+  const v = String(val).trim();
+  const ok = /^\d{1,3}(\.\d+)?(px|em|rem|%)$/i;
+  return ok.test(v) ? v : null;
+}
+function sanitizeUrl(url){
+  if (!url) return null;
+  const u = String(url).trim();
+  if (/^(https?:\/\/|mailto:|tel:)/i.test(u)) return u;
+  return null;
+}
+function applyInlineFormatting(escaped, allowLinks = true){
+  let t = escaped;
+  if (allowLinks) {
+    t = t.replace(/\[a\s+href=(?:"|')([^"']+)(?:"|')\](.*?)\[\/a\]/gis, (_, url, inner) => {
+      const valid = sanitizeUrl(url);
+      if (!valid) return inner;
+      return `<a href="${valid}">${applyInlineFormatting(inner, false)}</a>`;
+    });
+    t = t.replace(/\[a=([^\]]+)\](.*?)\[\/a\]/gis, (_, url, inner) => {
+      const valid = sanitizeUrl(url);
+      if (!valid) return inner;
+      return `<a href="${valid}">${applyInlineFormatting(inner, false)}</a>`;
+    });
+  }
+  t = t.replace(/\[(?:br|BR)\s*\/?\]/g, '<br/>');
+  t = t.replace(/\[b\](.*?)\[\/b\]/gis, '<strong>$1</strong>');
+  t = t.replace(/\[i\](.*?)\[\/i\]/gis, '<em>$1</em>');
+  t = t.replace(/\[u\](.*?)\[\/u\]/gis, '<u>$1</u>');
+  t = t.replace(/\[s\](.*?)\[\/s\]/gis, '<s>$1</s>');
+  t = t.replace(/\[sup\](.*?)\[\/sup\]/gis, '<sup>$1</sup>');
+  t = t.replace(/\[sub\](.*?)\[\/sub\]/gis, '<sub>$1</sub>');
+  t = t.replace(/\[code\](.*?)\[\/code\]/gis, '<code>$1</code>');
+  t = t.replace(/\[kbd\](.*?)\[\/kbd\]/gis, '<kbd>$1</kbd>');
+  t = t.replace(/\[(?:color|c)=([^\]]+)\](.*?)\[\/(?:color|c)\]/gis, (_, color, inner)=> {
+    const c = sanitizeColor(color);
+    return c ? `<span style="color:${c}">${inner}</span>` : inner;
+  });
+  t = t.replace(/\[(?:bg|highlight|mark)=([^\]]+)\](.*?)\[\/(?:bg|highlight|mark)\]/gis, (_, color, inner)=> {
+    const c = sanitizeColor(color);
+    return c ? `<span style="background-color:${c}">${inner}</span>` : inner;
+  });
+  t = t.replace(/\[size=([^\]]+)\](.*?)\[\/size\]/gis, (_, size, inner)=> {
+    const s = sanitizeSize(size);
+    return s ? `<span style="font-size:${s}">${inner}</span>` : inner;
+  });
+  return t;
+}
+function countIndent(line){
+  const tabs = (line.match(/^\t*/)||[''])[0].length;
+  const spaces = ((line.match(/^ +/)||[''])[0].length);
+  return tabs + Math.floor(spaces/2);
+}
+// ---------- REPLACE convertListsAndParagraphs WITH THIS BLOCK ----------
+function convertListsAndParagraphs(raw){
+  // Helper: escape
+  function esc(s){ return escapeHtml(String(s || '')); }
+
+  // Inline-tokenizer: returns tokens {type:'text'} or {type:'tag', name, attrs, close}
+  function tokenizeInline(s){
+    const res = [];
+    let i = 0, N = s.length;
+    while (i < N) {
+      const ch = s[i];
+      if (ch === '[') {
+        const j = s.indexOf(']', i+1);
+        if (j === -1) { // no closing bracket -> treat as text
+          res.push({type:'text', text: s.slice(i)});
+          break;
+        }
+        const inner = s.slice(i+1, j).trim();
+        if (!inner) { res.push({type:'text', text:'[]'}); i = j+1; continue; }
+        // closing tag
+        if (inner[0] === '/') {
+          const name = inner.slice(1).trim().toLowerCase();
+          res.push({type:'tag', name, attrs: null, close: true});
+          i = j+1; continue;
+        }
+        // opening tag with optional attribute: some forms: a href="...", a=URL, color=#fff
+        const parts = inner.split(/\s+/);
+        let name = parts[0].toLowerCase();
+        let attrs = {};
+        const rest = inner.slice(name.length).trim();
+        if (name === 'a' && rest.startsWith('href=')) {
+          let val = rest.replace(/^href=/i,'').trim();
+          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+            val = val.slice(1,-1);
+          }
+          attrs.href = val;
+        } else if (inner.includes('=')) {
+          const eqIdx = inner.indexOf('=');
+          const key = inner.slice(0, eqIdx).trim().toLowerCase();
+          let val = inner.slice(eqIdx+1).trim();
+          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) val = val.slice(1,-1);
+          attrs[key] = val;
+          name = key; // so [color=#111] => name='color', attrs={color:'#111'}
+        } else if (inner.startsWith('a=')) {
+          let val = inner.slice(2).trim();
+          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) val = val.slice(1,-1);
+          attrs.href = val; name = 'a';
+        }
+        res.push({type:'tag', name, attrs: attrs || null, close: false});
+        i = j+1;
+      } else {
+        // text until next '['
+        const next = s.indexOf('[', i);
+        const txt = next === -1 ? s.slice(i) : s.slice(i, next);
+        res.push({type:'text', text: txt});
+        i = next === -1 ? N : next;
+      }
+    }
+    return res;
+  }
+
+  // Helpers: sanitize values from earlier code (re-use functions if available)
+  function sanitizeColor(val){
+    if (!val) return null;
+    const v = String(val).trim();
+    const hex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+    const rgb = /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}(?:\s*,\s*(?:0|0?\.\d+|1))?\s*\)$/i;
+    const named = /^[a-z]+$/i;
+    if (hex.test(v) || rgb.test(v) || named.test(v)) return v;
+    return null;
+  }
+  function sanitizeSize(val){
+    if (!val) return null;
+    const v = String(val).trim();
+    if (/^\d{1,3}(\.\d+)?(px|em|rem|%)$/i.test(v)) return v;
+    return null;
+  }
+  function sanitizeUrl(u){
+    if (!u) return null;
+    const v = String(u).trim();
+    if (/^(https?:\/\/|mailto:|tel:)/i.test(v)) return v;
+    return null;
+  }
+
+  // produce opening html and closing html for a tag token
+  function openHtmlFor(tok){
+    const name = tok.name;
+    const a = tok.attrs || {};
+    switch(name){
+      case 'b': return '<strong>';
+      case 'i': return '<em>';
+      case 'u': return '<u>';
+      case 's': return '<s>';
+      case 'sup': return '<sup>';
+      case 'sub': return '<sub>';
+      case 'code': return '<code>';
+      case 'kbd': return '<kbd>';
+      case 'color':
+      case 'c': {
+        const col = sanitizeColor(a.color || a['color'] || a.value || a['0']);
+        return col ? `<span style="color:${col}">` : '<span>';
+      }
+      case 'bg':
+      case 'highlight':
+      case 'mark': {
+        const col = sanitizeColor(a.bg || a.value || a['0']);
+        return col ? `<span style="background-color:${col}">` : '<span>';
+      }
+      case 'size': {
+        const s = sanitizeSize(a.size || a.value || a['0']);
+        return s ? `<span style="font-size:${s}">` : '<span>';
+      }
+      case 'a': {
+        const href = sanitizeUrl((a.href || a.value || a['0']) || '');
+        if (!href) return '<a>';
+        // use rel noopener for safety; target behavior handled separately
+        return `<a href="${href}" target="${a.target || '_blank'}" rel="noopener noreferrer">`;
+      }
+      default:
+        return `<span>`; // fallback generic
+    }
+  }
+  function closeHtmlFor(tok){
+    switch(tok.name){
+      case 'b': return '</strong>';
+      case 'i': return '</em>';
+      case 'u': return '</u>';
+      case 's': return '</s>';
+      case 'sup': return '</sup>';
+      case 'sub': return '</sub>';
+      case 'code': return '</code>';
+      case 'kbd': return '</kbd>';
+      case 'color': case 'c': return '</span>';
+      case 'bg': case 'highlight': case 'mark': return '</span>';
+      case 'size': return '</span>';
+      case 'a': return '</a>';
+      default: return '</span>';
+    }
+  }
+
+  // Main parser: build blocks but preserve inline formatting stack across blocks
+  const lines = String(raw || '').replace(/\r\n?/g,'\n').split('\n');
+  const htmlParts = [];
+  const stack = []; // persistent open inline tag tokens (objects like {name, attrs})
+  let para = [];
+  let pendingBlank = false;
+  let lastWasListItem = false;
+  let lastLiIndex = null;
+
+  function closePara() {
+    if (para.length) {
+      const text = para.join('\n');
+      htmlParts.push(`<p>${renderInlineForBlock(text)}</p>`);
+      para = [];
+    }
+  }
+  function openList(type){ htmlParts.push(type === 'ol' ? '<ol>' : '<ul>'); }
+  function closeList(type){ htmlParts.push(type === 'ol' ? '</ol>' : '</ul>'); }
+
+  // calculate indentation level: 1 level per tab or every 2 spaces
+  function indentLevel(line){
+    const tabs = (line.match(/^\t*/) || [''])[0].length;
+    const spaces = ((line.match(/^ +/)||[''])[0].length);
+    return tabs + Math.floor(spaces/2);
+  }
+
+  // We need to track open lists and their types for nesting
+  const listStack = [];
+
+  // Render inline tokens for a block of text while maintaining stack
+  function renderInlineForBlock(blockText){
+    // tokens for this block
+    const tokens = tokenizeInline(blockText);
+    let out = '';
+    // at block start re-open all currently persistent tags
+    for (let t of stack) out += openHtmlFor(t);
+
+// inside renderInlineForBlock(): iterate tokens and render
+for (let tk of tokens){
+  if (tk.type === 'text') {
+    out += esc(tk.text).replace(/\n/g,'<br/>');
+    continue;
+  }
+  if (tk.type === 'tag'){
+    if (tk.close){
+      // existing close logic — find last matching in stack and close
+      let idx = -1;
+      for (let j = stack.length-1; j >= 0; j--){
+        if (stack[j].name === tk.name) { idx = j; break; }
+      }
+      if (idx === -1) continue;
+      for (let j = stack.length-1; j >= idx; j--){
+        out += closeHtmlFor(stack[j]);
+      }
+      stack.splice(idx);
+      continue;
+    } else {
+      // SPECIAL: inline media self-contained tags (emit full markup)
+      const name = tk.name;
+      const attrs = tk.attrs || {};
+      // get first attribute fallback helper
+      const firstAttr = (attrs && (attrs.src || attrs.value || Object.values(attrs)[0])) || '';
+
+      if (name === 'img' || name === 'image') {
+        const src = firstAttr || '';
+        const alt = attrs.alt || '';
+        out += `<div class="inline-media"><img class="inline-image" src="${escAttr(src)}" alt="${escAttr(alt)}" /></div>`;
+        continue;
+      }
+
+      if (name === 'vimeo' || name === 'video') {
+        const src = String(firstAttr || '');
+        const poster = attrs.poster || attrs.posterUrl || attrs.posterurl || '';
+        const vId = extractVimeoId(src);
+        // prefer poster attribute if provided; otherwise empty string (initInlineMedia will fetch it)
+        const embed = vId ? `https://player.vimeo.com/video/${vId}?badge=0&title=0&portrait=0&byline=0` : src;
+        out += `<div class="inline-video-wrapper" data-vimeo-id="${escAttr(vId||'')}" data-src="${escAttr(embed)}" data-poster="${escAttr(poster)}">` +
+                 `<img class="inline-poster" src="${escAttr(poster||'')}" alt="" />` +
+                 `<button class="inline-poster-play"><i class="fa fa-play"></i></button>` +
+                 `<iframe class="inline-iframe" data-src="${escAttr(embed)}" allow="autoplay; fullscreen" frameborder="0" allowfullscreen></iframe>` +
+               `</div>`;
+        continue;
+      }
+
+      // default behaviour for other inline tags (bold/italic/links etc)
+      const tokObj = { name: tk.name, attrs: tk.attrs || {} };
+      stack.push(tokObj);
+      out += openHtmlFor(tokObj);
+      continue;
+    }
+  }
+}
+
+
+    // At end of block we must temporarily close all currently open tags to keep HTML valid
+    // but keep them in persistent stack so we can reopen at next block.
+    for (let j = stack.length-1; j >= 0; j--) out += closeHtmlFor(stack[j]);
+
+    return out;
+  }
+
+  // Now iterate lines, build lists/paragraphs similar to previous logic with continuation handling
+  for (let i = 0; i < lines.length; i++){
+    const rawLine = lines[i];
+    const trimmed = rawLine.trim();
+
+    if (trimmed === '') {
+      pendingBlank = true;
+      lastWasListItem = false;
+      closePara();
+      // do NOT close listStack here; lists remain until explicit level change
+      continue;
+    }
+
+    const liMatchOL = rawLine.match(/^\s*(\d+)[\.\)]\s+(.*)$/);
+    const liMatchUL = rawLine.match(/^\s*[-*•]\s+(.*)$/);
+
+    if (liMatchOL || liMatchUL) {
+      // list item
+      closePara();
+      const isOL = !!liMatchOL;
+      const text = isOL ? liMatchOL[2] : liMatchUL[1];
+      const level = indentLevel(rawLine);
+
+      // adjust listStack to match level
+      while (listStack.length > level) {
+        const last = listStack.pop();
+        closeList(last);
+      }
+      while (listStack.length < level) {
+        // open same type as current item by default
+        openList(isOL ? 'ol' : 'ul');
+        listStack.push(isOL ? 'ol' : 'ul');
+      }
+
+      // if current level exists but type mismatches, close then open correct
+      if (listStack.length && listStack[listStack.length-1] !== (isOL ? 'ol' : 'ul')) {
+        const last = listStack.pop();
+        closeList(last);
+        openList(isOL ? 'ol' : 'ul');
+        listStack.push(isOL ? 'ol' : 'ul');
+      }
+
+      // render block inline for this li
+      const contentHtml = renderInlineForBlock(text.trim());
+      htmlParts.push(`<li>${contentHtml}</li>`);
+      lastWasListItem = true;
+      lastLiIndex = htmlParts.length - 1;
+      pendingBlank = false;
+      continue;
+    }
+
+    // continuation detection: if previous was list item and no blank line and line is indented (>=2 spaces or a tab)
+    const cont = lastWasListItem && !pendingBlank && (/^\s{2,}\S/.test(rawLine) || /^\t+\S/.test(rawLine));
+    if (cont && lastLiIndex !== null) {
+      const contHtml = renderInlineForBlock(trimmed);
+      // append continuation HTML inside last <li> before the closing </li>
+      htmlParts[lastLiIndex] = htmlParts[lastLiIndex].replace(/<\/li>\s*$/, '<br/>' + contHtml + '</li>');
+      lastWasListItem = true;
+      pendingBlank = false;
+      continue;
+    }
+
+    // not list nor continuation: treat as paragraph
+    // close any open lists before paragraphs for tidy output
+    while (listStack.length) {
+      const last = listStack.pop();
+      closeList(last);
+    }
+    para.push(rawLine);
+    lastWasListItem = false;
+    pendingBlank = false;
+  }
+
+  // finalize paragraph
+  closePara();
+  // close any remaining open lists
+  while (listStack.length) {
+    const last = listStack.pop();
+    closeList(last);
+  }
+
+  // join and return
+  return htmlParts.join('') || '';
+}
+// ---------- END REPLACEMENT ----------
+
+/* ----------------- RICH TEXT + MEDIA TAGS ----------------- */
+function renderRich(input){
+  if (!input) return '';
+  const raw = String(input);
+
+  const mediaRe = /\[media\s+([^\]]+?)\s*\/?\]/gi;
+  let processed = raw.replace(mediaRe, (match, attrText) => {
+    const attrRe = /([a-zA-Z0-9_\-]+)\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s"']+))/g;
+    let m;
+    const attrs = {};
+    while ((m = attrRe.exec(attrText)) !== null) {
+      attrs[m[1]] = m[2] || m[3] || m[4] || '';
+    }
+    const type = attrs.type ? attrs.type.trim().toLowerCase() : (attrs.src && attrs.src.indexOf('vimeo.com') !== -1 ? 'vimeo' : 'image');
+    const src = attrs.src ? attrs.src.trim() : (attrs.url ? attrs.url.trim() : '');
+    const poster = attrs.poster ? attrs.poster.trim() : (attrs.posterUrl ? attrs.posterUrl.trim() : '');
+    const aspect = attrs.aspect ? attrs.aspect.trim() : '';
+    const placeholder = `<div class="embedded-media" data-media-type="${escapeHtml(type)}" data-media-src="${escapeHtml(src)}" data-media-poster="${escapeHtml(poster)}" data-media-aspect="${escapeHtml(aspect)}"></div>`;
+    return placeholder;
+  });
+
+  const parts = processed.split(/(<div class="embedded-media"[^>]*><\/div>)/g);
+  let out = '';
+  for (const part of parts) {
+    if (!part) continue;
+    if (part.startsWith('<div class="embedded-media"')) {
+      out += part;
+    } else {
+      out += convertListsAndParagraphs(part);
+    }
+  }
+  return out;
+}
+/* ================= END RICH TEXT HELPERS ================= */
+
+/* DOM refs */
+let currentQuestionIndex = 0;
+let questionQueue = Array.isArray(window.questions) ? window.questions.slice() : (Array.isArray(questions) ? questions.slice() : []);
+const questionImg = document.getElementById('questionImage');
+const videoWrapper = document.getElementById('videoWrapper');
+const questionEl = document.getElementById('question-text');
+const questionDescEl = document.getElementById('question-desc');
+const optionsEl = document.getElementById('options');
+const commentBox = document.getElementById('comment');
+const nextBtn = document.getElementById('nextBtn');
+const surveyCard = document.getElementById('survey-card');
+
+/* ====== SESSION ANSWERS & PLACEHOLDER HELPERS (ADDED) ====== */
+/* sessionAnswers holds values for the current quiz session */
+const sessionAnswers = {}; // e.g. sessionAnswers['petName'] = "Fluffy"
+
+/* store an answer into sessionAnswers; key must be string */
+function storeAnswer(key, value) {
+  if (!key) return;
+  try {
+    sessionAnswers[String(key)] = String(value);
+  } catch(e){}
+}
+
+/* retrieve stored answer, or null if missing */
+function getStoredAnswer(key) {
+  if (!key) return null;
+  return sessionAnswers.hasOwnProperty(key) ? sessionAnswers[String(key)] : null;
+}
+
+/* Replace placeholders in raw question/option/comment strings BEFORE rich rendering.
+   Supported tokens:
+     - {answers.KEY}  -> replaced with value from sessionAnswers[KEY] if present
+     - {answer}       -> left untouched here (this token is for immediate answer substitution handled later)
+   Note: this runs before renderRich(), which will escape and format the resulting string.
+*/
+function applyAnswerPlaceholders(raw) {
+  if (!raw) return raw;
+  let s = String(raw);
+  // Replace {answers.KEY} tokens (KEY is any non-} chars)
+  s = s.replace(/\{answers\.([^\}]+)\}/g, (m, key) => {
+    const val = getStoredAnswer(key);
+    return (val == null) ? '' : val;
+  });
+  return s;
+}
+/* ====== END SESSION HELPERS ====== */
+
+/* ====== EMBED: iframe auto-size parent logic (inserted) ====== */
+const EMBED_SETTINGS = {
+  autoHeight: true,
+  autoWidth: false,
+  fixedHeight: '600px',
+  fixedWidth: '600px',
+};
+
+const theFrame = document.getElementById('theFrame');
+
+function applyFixedDimensions() {
+  if (!theFrame) return;
+  if (!EMBED_SETTINGS.autoHeight) theFrame.style.height = EMBED_SETTINGS.fixedHeight;
+  if (!EMBED_SETTINGS.autoWidth) theFrame.style.width = EMBED_SETTINGS.fixedWidth;
+}
+applyFixedDimensions();
+
+window.addEventListener('message', (ev) => {
+  if (!ev.data || typeof ev.data !== 'object') return;
+  if (ev.data.type === 'embed-height' && typeof ev.data.height === 'number') {
+    if (EMBED_SETTINGS.autoHeight && theFrame) {
+      theFrame.style.height = ev.data.height + 'px';
+    }
+  }
+  if (ev.data.type === 'embed-width' && typeof ev.data.width === 'number') {
+    if (EMBED_SETTINGS.autoWidth && theFrame) {
+      theFrame.style.width = ev.data.width + 'px';
+    }
+  }
+}, false);
+
+// fallback: if same-origin and autoHeight true, try to measure after load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (!theFrame || !EMBED_SETTINGS.autoHeight) return;
+    try {
+      const doc = theFrame.contentDocument || theFrame.contentWindow.document;
+      if (doc) {
+        const h = Math.max(
+          doc.documentElement.scrollHeight,
+          doc.body.scrollHeight,
+          doc.documentElement.offsetHeight,
+          doc.body.offsetHeight
+        );
+        if (h) theFrame.style.height = h + 'px';
+      }
+    } catch (e) {
+      // cross-origin access not allowed; rely on postMessage from child
+    }
+  }, 200);
+});
+/* ====== END EMBED ====== */
+
+let currentVimeoPlayer = null;
+let mediaInstance = null;
+
+/* TRACK embedded media instances from comment/footer etc */
+const embeddedMediaInstances = [];
+function destroyEmbeddedMediaInstances() {
+  while (embeddedMediaInstances.length) {
+    const it = embeddedMediaInstances.pop();
+    try {
+      if (it.player && typeof it.player.unload === 'function') it.player.unload().catch(()=>{});
+      if (it.player && typeof it.player.destroy === 'function') it.player.destroy().catch(()=>{});
+    } catch(e){}
+    try { if (it.container && it.container.parentNode) it.container.parentNode.removeChild(it.container); } catch(e){}
+  }
+}
+
+/* Vimeo helpers */
+function parseVimeoId(url) {
+  if (!url || typeof url !== 'string') return null;
+  url = url.trim();
+  let m = url.match(/player\.vimeo\.com\/video\/([0-9]+)/);
+  if (m && m[1]) return m[1];
+  m = url.match(/vimeo\.com\/(?:.*\/)?([0-9]+)/);
+  if (m && m[1]) return m[1];
+  const nums = url.match(/([0-9]+)/g);
+  if (nums && nums.length) return nums[nums.length - 1];
+  return null;
+}
+async function fetchVimeoThumbnail(vimeoId) {
+  try {
+    const url = `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${vimeoId}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('No thumbnail');
+    const json = await resp.json();
+    return json.thumbnail_url || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/* destroy any current Vimeo player used for question media */
+function destroyCurrentVimeo() {
+  try {
+    if (currentVimeoPlayer && typeof currentVimeoPlayer.unload === 'function') {
+      currentVimeoPlayer.unload().catch(()=>{});
+    }
+    if (currentVimeoPlayer && typeof currentVimeoPlayer.destroy === 'function') {
+      currentVimeoPlayer.destroy().catch(()=>{});
+    }
+  } catch(e){}
+  currentVimeoPlayer = null;
+
+  try {
+    if (mediaInstance && mediaInstance.container && mediaInstance.container.parentNode) {
+      mediaInstance.container.parentNode.removeChild(mediaInstance.container);
+    }
+  } catch (e){}
+  mediaInstance = null;
+
+  try { questionImg.style.display = 'none'; } catch(e){}
+  videoWrapper.style.display = 'none';
+  videoWrapper.innerHTML = '';
+}
+
+/* create per-question video media (vimeo) */
+function createVideoMedia(vimeoId, posterUrl, aspect){
+  destroyCurrentVimeo();
+  videoWrapper.style.aspectRatio = aspect || getSurveyConfig().defaultMediaAspect || '16/9';
+
+  const container = document.createElement('div');
+  container.style.width = '100%';
+  container.style.height = '100%';
+  container.style.position = 'relative';
+
+  const poster = document.createElement('img');
+  poster.className = 'video-poster';
+  poster.alt = 'Video poster';
+  poster.loading = 'lazy';
+  poster.style.display = 'none';
+  poster.style.width = '100%';
+  poster.style.height = '100%';
+  poster.style.objectFit = 'cover';
+
+  const playBtn = document.createElement('button');
+  playBtn.className = 'poster-play';
+  playBtn.setAttribute('aria-label', 'Play video');
+  playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+  playBtn.style.display = 'none';
+
+  const iframe = document.createElement('iframe');
+  iframe.className = 'question-video';
+  iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+  iframe.allowFullscreen = true;
+  iframe.style.display = 'none';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.title = 'Question video';
+
+  container.appendChild(poster);
+  container.appendChild(playBtn);
+  container.appendChild(iframe);
+
+  videoWrapper.innerHTML = '';
+  videoWrapper.appendChild(container);
+  videoWrapper.style.display = 'block';
+  videoWrapper.setAttribute('aria-hidden', 'false');
+
+  mediaInstance = { container, poster, playBtn, iframe, vimeoId };
+
+  const setPoster = (src) => {
+    if (!src) { poster.style.display = 'none'; playBtn.style.display = 'none'; return; }
+    poster.src = src;
+    poster.style.display = 'block';
+    playBtn.style.display = 'flex';
+  };
+
+  if (posterUrl && String(posterUrl).trim()){
+    setPoster(posterUrl.trim());
+    poster.onerror = async () => {
+      poster.style.display = 'none';
+      playBtn.style.display = 'none';
+      const fetched = await fetchVimeoThumbnail(vimeoId);
+      if (fetched) setPoster(fetched);
+    };
+  } else {
+    (async ()=>{
+      const fetched = await fetchVimeoThumbnail(vimeoId);
+      if (fetched) {
+        setPoster(fetched);
+      } else {
+        const params = new URLSearchParams({ title:0, byline:0, portrait:0, autoplay:0 });
+        iframe.src = `https://player.vimeo.com/video/${vimeoId}?${params.toString()}`;
+        iframe.style.display = 'block';
+      }
+    })();
+  }
+
+  const playHandler = async () => {
+    try { gsap.killTweensOf(playBtn); gsap.killTweensOf(poster); } catch(e){}
+    gsap.to(playBtn, { duration: 0.36, scale: 1.7, opacity: 0, ease: "power2.out" });
+    gsap.to(poster, {
+      duration: 0.48,
+      scale: 1.03,
+      opacity: 0,
+      ease: "power2.out",
+      onComplete: async () => {
+        try { playBtn.style.display = 'none'; } catch(e){}
+        try { poster.style.display = 'none'; } catch(e){}
+        const params = new URLSearchParams({ title:0, byline:0, portrait:0, autoplay:1 });
+        const srcAutoplay = `https://player.vimeo.com/video/${vimeoId}?${params.toString()}`;
+        iframe.src = srcAutoplay;
+        iframe.style.display = 'block';
+        try {
+          currentVimeoPlayer = new Vimeo.Player(iframe);
+          await currentVimeoPlayer.play();
+          try { await currentVimeoPlayer.setVolume(1); } catch(e){}
+        } catch (err) {
+          const paramsFallback = new URLSearchParams({ title:0, byline:0, portrait:0, autoplay:0 });
+          iframe.src = `https://player.vimeo.com/video/${vimeoId}?${paramsFallback.toString()}`;
+          iframe.style.display = 'block';
+          try { currentVimeoPlayer = new Vimeo.Player(iframe); } catch(_){}
+        }
+      }
+    });
+  };
+
+  playBtn.addEventListener('click', playHandler);
+  poster.addEventListener('click', playHandler);
+  return { container, poster, playBtn, iframe, playHandler, setPoster };
+}
+
+/* ---------- INIT EMBEDDED MEDIA INSIDE COMMENT BOX ---------- */
+async function initEmbeddedMedia(container){
+  if (!container) return;
+  const placeholders = Array.from(container.querySelectorAll('.embedded-media'));
+  if (!placeholders.length) return;
+
+  for (const ph of placeholders){
+    if (ph.dataset.initialized) continue;
+    ph.dataset.initialized = '1';
+
+    const type = (ph.dataset.mediaType || 'image').trim().toLowerCase();
+    const src = (ph.dataset.mediaSrc || '').trim();
+    const poster = (ph.dataset.mediaPoster || '').trim();
+    const aspect = (ph.dataset.mediaAspect || '') || getSurveyConfig().defaultMediaAspect || getComputedStyle(document.documentElement).getPropertyValue('--default-media-aspect') || '16/9';
+    ph.style.aspectRatio = aspect;
+
+    const posterEl = document.createElement('img');
+    posterEl.className = 'embed-poster';
+    posterEl.alt = 'Embedded media poster';
+    posterEl.loading = 'lazy';
+    posterEl.style.display = 'none';
+    posterEl.style.width = '100%';
+    posterEl.style.height = '100%';
+    posterEl.style.objectFit = 'cover';
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'embed-play';
+    playBtn.setAttribute('aria-label', 'Play');
+    playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    playBtn.style.display = 'none';
+
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+    iframe.style.display = 'none';
+
+    const videoEl = document.createElement('video');
+    videoEl.style.display = 'none';
+    videoEl.controls = true;
+    videoEl.playsInline = true;
+
+    ph.appendChild(posterEl);
+    ph.appendChild(playBtn);
+    ph.appendChild(iframe);
+    ph.appendChild(videoEl);
+
+    const setPosterFrom = (url) => {
+      if (!url) { posterEl.style.display = 'none'; playBtn.style.display = 'none'; return; }
+      posterEl.src = url;
+      posterEl.style.display = 'block';
+      playBtn.style.display = 'flex';
+    };
+
+    if (type === 'vimeo') {
+      const vimeoId = parseVimeoId(src);
+      if (!vimeoId) {
+        setPosterFrom(src || '');
+        continue;
+      }
+      if (poster) {
+        setPosterFrom(poster);
+        posterEl.onerror = async () => {
+          posterEl.style.display = 'none';
+          playBtn.style.display = 'none';
+          const fetched = await fetchVimeoThumbnail(vimeoId);
+          if (fetched) setPosterFrom(fetched);
+        };
+      } else {
+        const thumb = await fetchVimeoThumbnail(vimeoId);
+        if (thumb) setPosterFrom(thumb);
+        else {
+          const params = new URLSearchParams({ title:0, byline:0, portrait:0, autoplay:0 });
+          iframe.src = `https://player.vimeo.com/video/${vimeoId}?${params.toString()}`;
+          iframe.style.display = 'block';
+        }
+      }
+
+      const playHandler = async () => {
+        try { gsap.killTweensOf(playBtn); gsap.killTweensOf(posterEl); } catch(e){}
+        gsap.to(playBtn, { duration: 0.36, scale: 1.7, opacity: 0, ease: "power2.out" });
+        gsap.to(posterEl, {
+          duration: 0.48,
+          scale: 1.03,
+          opacity: 0,
+          ease: "power2.out",
+          onComplete: async () => {
+            try { playBtn.style.display = 'none'; } catch(e){}
+            try { posterEl.style.display = 'none'; } catch(e){}
+            const params = new URLSearchParams({ title:0, byline:0, portrait:0, autoplay:1 });
+            iframe.src = `https://player.vimeo.com/video/${vimeoId}?${params.toString()}`;
+            iframe.style.display = 'block';
+            try {
+              const player = new Vimeo.Player(iframe);
+              await player.play();
+              try { await player.setVolume(1); } catch(e){}
+              embeddedMediaInstances.push({ player, container: ph });
+            } catch (err) {
+              iframe.style.display = 'block';
+            }
+          }
+        });
+      };
+      playBtn.addEventListener('click', playHandler);
+      posterEl.addEventListener('click', playHandler);
+    }
+    else if (type === 'video') {
+      if (poster) {
+        setPosterFrom(poster);
+        posterEl.onerror = () => { posterEl.style.display = 'none'; playBtn.style.display = 'none'; };
+      } else {
+        posterEl.style.display = 'none';
+      }
+      videoEl.src = src || '';
+      const playHandler = async () => {
+        try { gsap.killTweensOf(playBtn); gsap.killTweensOf(posterEl); } catch(e){}
+        gsap.to(playBtn, { duration: 0.36, scale: 1.7, opacity: 0, ease: "power2.out" });
+        gsap.to(posterEl, {
+          duration: 0.48,
+          scale: 1.03,
+          opacity: 0,
+          ease: "power2.out",
+          onComplete: async () => {
+            try { playBtn.style.display = 'none'; } catch(e){}
+            try { posterEl.style.display = 'none'; } catch(e){}
+            videoEl.style.display = 'block';
+            try { await videoEl.play(); } catch(e){}
+          }
+        });
+      };
+      playBtn.addEventListener('click', playHandler);
+      posterEl.addEventListener('click', playHandler);
+      embeddedMediaInstances.push({ player: videoEl, container: ph });
+    }
+    else { // image
+      if (src) {
+        setPosterFrom(src);
+        posterEl.onclick = ()=>{}; // just shows the image
+      } else {
+        ph.style.display = 'none';
+      }
+    }
+  }
+}
+
+/* Helpers for comment rendering */
+function clearComment(){
+  commentBox.classList.remove('error');
+  commentBox.style.backgroundColor = '';
+  commentBox.style.color = '';
+  commentBox.style.display = 'none';
+  commentBox.innerHTML = '';
+}
+async function showSuccessComment(message){
+  destroyEmbeddedMediaInstances();
+  commentBox.classList.remove('error');
+  commentBox.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color-light');
+  commentBox.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color-primary');
+  commentBox.innerHTML = renderRich(String(message || ''));
+  commentBox.style.display = 'block';
+  await initEmbeddedMedia(commentBox).catch(()=>{});
+}
+async function showErrorComment(message){
+  destroyEmbeddedMediaInstances();
+  commentBox.classList.add('error');
+  commentBox.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--error-light');
+  commentBox.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error-color');
+  commentBox.innerHTML = renderRich(String(message || ''));
+  commentBox.style.display = 'block';
+  await initEmbeddedMedia(commentBox).catch(()=>{});
+}
+
+/* NEXT button helpers, placeholders for texts/hrefs */
+let currentWaitingText = DEFAULT_WAITING_TEXT;
+let currentWaitingSub = '';
+let currentActiveNextMain = null;
+let currentActiveNextSub = null;
+let currentDefaultNextMain = DEFAULT_NEXT_TEXT;
+let currentDefaultNextSub = '';
+let currentActiveHref = null;
+let currentActiveTarget = null;
+
+function setNextButtonText(main, sub){
+  const mainSpan = nextBtn.querySelector('.btn-main');
+  const subSpan = nextBtn.querySelector('.btn-sub');
+  if (mainSpan) mainSpan.textContent = main || '';
+  if (subSpan) subSpan.textContent = sub || '';
+}
+function updateNextButtonState(isValid) {
+  if (!nextBtn) return;
+  if (NEXT_BUTTON_MODE === 'hidden') {
+    nextBtn.style.display = isValid ? 'flex' : 'none';
+    if (isValid) setNextButtonText(currentActiveNextMain || currentDefaultNextMain, currentActiveNextSub || currentDefaultNextSub);
+    nextBtn.classList.remove('disabled-next');
+    nextBtn.disabled = false;
+  } else {
+    nextBtn.style.display = 'flex';
+    if (!isValid) {
+      nextBtn.disabled = true;
+      nextBtn.classList.add('disabled-next');
+      setNextButtonText(currentWaitingText || DEFAULT_WAITING_TEXT, currentWaitingSub || '');
+    } else {
+      nextBtn.disabled = false;
+      nextBtn.classList.remove('disabled-next');
+      setNextButtonText(currentActiveNextMain || currentDefaultNextMain, currentActiveNextSub || currentDefaultNextSub);
+    }
+  }
+}
+function setNextDuringSave(isSaving) {
+  if (!nextBtn) return;
+  if (isSaving) {
+    if (NEXT_BUTTON_MODE === 'hidden') {
+      nextBtn.style.display = 'none';
+    } else {
+      nextBtn.style.display = 'flex';
+      nextBtn.disabled = true;
+      nextBtn.classList.add('disabled-next');
+      setNextButtonText('Saving...', '');
+    }
+  } else {
+    nextBtn.classList.remove('disabled-next');
+  }
+}
+
+/* Placeholder substitution helper */
+function insertAnswerInComment(comment, answer){
+  return (comment || '').replace(/\{answer\}/g, answer);
+}
+
+/* VALIDATION */
+function validateName(name){
+  const trimmed = name.trim();
+  if (trimmed.length === 0) return { valid:false, message: "Please enter your name." };
+  const letterMatch = trimmed.match(/\p{L}/gu) || [];
+  if (letterMatch.length < 2) return { valid:false, message: "Name must contain at least 2 letters." };
+  const validChars = /^[\p{L} ]+$/u.test(trimmed);
+  if (!validChars) return { valid:false, message: "Name may contain only letters and spaces." };
+  return { valid:true, message: "" };
+}
+function validateEmail(email){
+  const trimmed = email.trim();
+  if (trimmed.length === 0) return { valid:false, message: "Please enter your email address." };
+  const re = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  if (!re.test(trimmed)) return { valid:false, message: "Enter a valid email address (example: name@example.com)." };
+  return { valid:true, message: "" };
+}
+
+/* Location & save helpers (unchanged) */
+async function getLocation(){
+  try {
+    const resp = await fetch('https://ipapi.co/json/');
+    if (!resp.ok) throw new Error('Location lookup failed');
+    const d = await resp.json();
+    const city = d.city || 'Unknown';
+    const country = d.country_name || 'Unknown';
+    return `${city}, ${country}`;
+  } catch (e){
+    return 'Unknown';
+  }
+}
+// REPLACE the old saveLeadToSheet function with this updated version
+async function saveLeadToSheet(name, email, sheetName) {
+  try {
+    // Resolve sheetName precedence:
+    // 1) explicit sheetName parameter passed to the function
+    // 2) surveyConfig.defaultSheetName (if set in questions.js)
+    // 3) global SHEET_NAME constant fallback
+    const cfg = getSurveyConfig();
+    let finalSheetName = null;
+    if (sheetName && String(sheetName).trim()) {
+      finalSheetName = String(sheetName).trim();
+    } else if (cfg && cfg.defaultSheetName && String(cfg.defaultSheetName).trim()) {
+      finalSheetName = String(cfg.defaultSheetName).trim();
+    } else {
+      finalSheetName = SHEET_NAME;
+    }
+
+    // Gather location and time as before
+    const location = await getLocation();
+    const now = new Date();
+    const time = now.toLocaleString('en-US', { timeZone: TIMEZONE });
+
+    // Build body and send to Apps Script
+    const body = new URLSearchParams();
+    body.append('sheetId', SHEET_ID);
+    body.append('sheetName', finalSheetName); // send the resolved sheet name here
+    body.append('name', `'${name}`);
+    body.append('email', `'${email}`);
+    body.append('location', `'${location}`);
+    body.append('time', `'${time}`);
+
+    const resp = await fetch(FORM_ACTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+      body: body.toString()
+    });
+
+    const text = await resp.text();
+    let data;
+    try { data = JSON.parse(text); } catch { throw new Error('Unexpected server response'); }
+
+    if (data && data.status === 'success') {
+      return { ok:true, message: data.message || 'Saved. Thank you!' };
+    } else {
+      return { ok:false, message: data && data.message ? data.message : 'Submission failed.' };
+    }
+  } catch (err) {
+    return { ok:false, message: err.message || 'Network error' };
+  }
+}
+
+/* Focus helper */
+function focusNextInput(currentInput){
+  const inputs = Array.from(optionsEl.querySelectorAll('.input-wrapper input'));
+  const idx = inputs.indexOf(currentInput);
+  if (idx === -1) return;
+  for (let i = idx + 1; i < inputs.length; i++){
+    if (!inputs[i].disabled){
+      inputs[i].focus();
+      const nextBtnElement = inputs[i].parentElement.querySelector('button');
+      if (inputs[i].value.trim()) nextBtnElement.style.display = 'block';
+      return;
+    }
+  }
+}
+
+/* ===== Scroll helper: bring page to top =====
+   Call this immediately when Next is clicked so user always
+   starts reading from the top of the page after navigation.
+*/
+function bringPageToTop(immediate = true) {
+  try {
+    if (immediate) {
+      // instant jump to top (fast and reliable)
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    } else {
+      // smoother scroll (optional) — not used by default but kept for flexibility
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+  } catch (e) {
+    // older browsers fallback
+    try { window.scrollTo(0, 0); } catch(_) {}
+  }
+}
+
+/* Utility and normalization */
+function questionHasAnswers(q){
+  if (!q) return false;
+  if (q.type === 'choice' && Array.isArray(q.options) && q.options.length) return true;
+  if (q.type === 'input' && Array.isArray(q.inputs) && q.inputs.length) return true;
+  if (q.type === 'opt-in' && Array.isArray(q.inputs) && q.inputs.length) return true;
+  return false;
+}
+function insertNestedQuestions(nestedArr){
+  if (!Array.isArray(nestedArr) || !nestedArr.length) return;
+  const clones = nestedArr.map(q => JSON.parse(JSON.stringify(q)));
+  const insertAt = currentQuestionIndex + 1;
+  questionQueue.splice(insertAt, 0, ...clones);
+}
+function normalizeMedia(q){
+  const cfg = getSurveyConfig();
+  const defaultAspect = (cfg && cfg.defaultMediaAspect) ? cfg.defaultMediaAspect : (getComputedStyle(document.documentElement).getPropertyValue('--default-media-aspect') || '16/9');
+  if (!q) return null;
+  if (q.media) {
+    if (typeof q.media === 'string') {
+      return { type: 'image', src: q.media, poster: null, aspect: q.mediaAspect || defaultAspect };
+    }
+    if (typeof q.media === 'object') {
+      const type = (q.media.type || '').toString().toLowerCase();
+      const src = q.media.src || q.media.url || q.media.path || null;
+      const poster = q.media.poster || q.media.posterUrl || q.media.posterSrc || null;
+      let mtype = 'image';
+      if (type === 'vimeo' || (typeof src === 'string' && parseVimeoId(src))) mtype = 'vimeo';
+      else if (type === 'video') mtype = 'video';
+      else if (type === 'image') mtype = 'image';
+      else if (typeof src === 'string' && /\.(mp4|webm|ogg)$/i.test(src)) mtype = 'video';
+      return { type: mtype, src, poster, aspect: q.media.aspect || q.mediaAspect || defaultAspect };
+    }
+  }
+  if (q.vimeo) {
+    return { type: 'vimeo', src: q.vimeo, poster: q.vimeoPoster || q.vimeoposter || null, aspect: q.mediaAspect || defaultAspect };
+  }
+  if (q.image) {
+    return { type: 'image', src: q.image, poster: null, aspect: q.mediaAspect || defaultAspect };
+  }
+  return null;
+}
+
+/* ============================
+   NEW: Advanced Layout Ordering
+   Paste this after destroyCurrentVimeo()
+   ============================ */
+
+function detachLayoutNodes() {
+  // Remove the primary component nodes from the surveyCard (keeps references)
+  const nodes = { questionImg, videoWrapper, questionEl, questionDescEl, optionsEl, commentBox, nextBtn };
+  for (const key in nodes) {
+    const n = nodes[key];
+    if (n && n.parentNode === surveyCard) surveyCard.removeChild(n);
+  }
+  return nodes;
+}
+
+function appendNodeByName(name, mediaObj) {
+  // Append the correct DOM node to surveyCard based on the simple name
+  name = String(name || '').toLowerCase();
+  // media selection: prefer explicit 'image' or 'video', or 'media' which picks based on mediaObj
+  if (name === 'media' || name === 'video' || name === 'image') {
+    if (name === 'image') {
+      if (questionImg) surveyCard.appendChild(questionImg);
+      return;
+    }
+    if (name === 'video') {
+      if (videoWrapper) surveyCard.appendChild(videoWrapper);
+      return;
+    }
+    // 'media' auto-picks by mediaObj
+    if (mediaObj && mediaObj.type === 'vimeo' || (mediaObj && mediaObj.type === 'video')) {
+      if (videoWrapper) surveyCard.appendChild(videoWrapper);
+    } else {
+      if (questionImg) surveyCard.appendChild(questionImg);
+    }
+    return;
+  }
+
+  if (name === 'question') {
+    surveyCard.appendChild(questionEl);
+    return;
+  }
+  if (name === 'description' || name === 'desc') {
+    surveyCard.appendChild(questionDescEl);
+    return;
+  }
+  if (name === 'options' || name === 'answers' || name === 'choices') {
+    surveyCard.appendChild(optionsEl);
+    return;
+  }
+  if (name === 'comment' || name === 'comments') {
+    surveyCard.appendChild(commentBox);
+    return;
+  }
+  if (name === 'button' || name === 'next' || name === 'cta') {
+    surveyCard.appendChild(nextBtn);
+    return;
+  }
+  // unknown names are ignored
+}
+
+function applyLayoutOrder(q, mediaObj) {
+  // High-level: detach the known nodes, then re-append in the order specified by q.layout
+  // Fallback default order if q.layout is not provided or invalid.
+  const defaults = ['media','question','description','options','comment','button'];
+
+  // Normalize layout: array of lower-cased strings
+  let layout = [];
+  if (q && Array.isArray(q.layout) && q.layout.length) {
+    layout = q.layout.map(it => String(it).trim().toLowerCase()).filter(Boolean);
+  } else if (q && typeof q.layout === 'string' && q.layout.trim()) {
+    // allow comma separated single string: "media,question,description"
+    layout = q.layout.split(',').map(it => String(it).trim().toLowerCase()).filter(Boolean);
+  } else {
+    layout = defaults.slice();
+  }
+
+  // Detach current nodes
+  detachLayoutNodes();
+
+  // Append according to layout, ensuring no duplicates; if a layout entry is 'media:image' or 'media:video' handle gracefully
+  const appended = new Set();
+  function doAppendToken(token) {
+    if (!token) return;
+    // support tokens like 'media:image' -> prefer image; 'media:video' -> video
+    const parts = token.split(':').map(p => p.trim());
+    const base = parts[0];
+    const subtype = parts[1] || null;
+
+    let nameToUse = base;
+    if (base === 'media' && subtype) nameToUse = subtype; // image or video
+
+    if (appended.has(nameToUse)) return;
+    appendNodeByName(nameToUse, mediaObj);
+    appended.add(nameToUse);
+  }
+
+  layout.forEach(tok => doAppendToken(tok));
+
+  // Append any defaults that were not included in layout so screen still has all components
+  defaults.forEach(d => {
+    if (!appended.has(d)) doAppendToken(d);
+  });
+}
+
+/* ---------- Inline media helpers ---------- */
+
+// escape attribute values safely (minimal)
+function escAttr(v){
+  if (v == null) return '';
+  return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// extract vimeo ID from typical vimeo URLs (returns null if not found)
+function extractVimeoId(url){
+  if (!url) return null;
+  try {
+    const m = String(url).match(/vimeo\.com\/(?:.*\/)?([0-9]+)/);
+    if (m && m[1]) return m[1];
+  } catch(e){}
+  return null;
+}
+
+/* Fetch a Vimeo thumbnail via oEmbed (returns a thumbnail URL or null) */
+async function fetchVimeoThumbnail(vimeoId){
+  if (!vimeoId) return null;
+  try {
+    const res = await fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${vimeoId}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.thumbnail_url || null;
+  } catch(e){
+    return null;
+  }
+}
+
+/* Initialize inline media elements inside a container (poster/plays, fetch thumbnails).
+   Call this after you insert HTML (descriptions/comments/options). */
+function initInlineMedia(container){
+  if (!container || !container.querySelectorAll) return;
+
+  // INLINE IMAGES: lazy error handling
+  container.querySelectorAll('.inline-image').forEach(img=>{
+    if (!img.dataset.inited) {
+      img.dataset.inited = '1';
+      img.loading = 'lazy';
+      img.addEventListener('error', ()=> { img.style.display = 'none'; });
+    }
+  });
+
+  // INLINE VIDEOS: each wrapper is a placeholder that will create the iframe on play
+  container.querySelectorAll('.inline-video-wrapper').forEach(async wrapper=>{
+    if (wrapper.dataset.inited) return;
+    wrapper.dataset.inited = '1';
+
+    const posterEl = wrapper.querySelector('.inline-poster');
+    const playBtn = wrapper.querySelector('.inline-poster-play');
+    const iframe = wrapper.querySelector('.inline-iframe');
+
+    // if poster empty, try fetch from vimeo
+    const vid = wrapper.dataset.vimeoId || '';
+    if ((!posterEl || !posterEl.src) && vid) {
+      const thumb = await fetchVimeoThumbnail(vid).catch(()=>null);
+      if (thumb && posterEl) posterEl.src = thumb;
+    }
+
+    // ensure play button shows only when poster available (graceful)
+    if (!playBtn) {
+      const btn = document.createElement('button');
+      btn.className = 'inline-poster-play';
+      btn.innerHTML = '<i class="fa fa-play"></i>';
+      wrapper.appendChild(btn);
+    }
+
+    // attach click handler to play
+    (wrapper.querySelector('.inline-poster-play') || wrapper.querySelector('.poster-play')).addEventListener('click', async (e)=>{
+      e.preventDefault();
+
+      const playButton = e.currentTarget;
+      // visual animation: gsap if available, otherwise CSS transform
+      if (window.gsap) {
+        gsap.to(playButton, { scale: 1.45, opacity: 0, duration: 0.28, ease: 'power2.out' });
+        gsap.to(wrapper.querySelector('.inline-poster'), { scale: 1.04, opacity: 0.96, duration: 0.5, ease: 'power2.out' });
+      } else {
+        playButton.style.transform = 'scale(1.45)';
+        playButton.style.opacity = '0';
+      }
+
+      // create iframe if missing and set src to autoplay (muted not set so sound works if user clicked)
+      const src = iframe.dataset.src || iframe.getAttribute('data-src') || wrapper.dataset.src;
+      if (src && !iframe.src) {
+        // ensure autoplay param present, and unmuted (autoplay with sound requires user click which we have)
+        const sep = src.includes('?') ? '&' : '?';
+        iframe.src = src + sep + 'autoplay=1&muted=0';
+      }
+      if (iframe) iframe.style.display = 'block';
+      // hide poster + play button after a short delay so animation can run
+      setTimeout(()=> {
+        if (posterEl) posterEl.style.display = 'none';
+        if (playButton) playButton.style.display = 'none';
+      }, 180);
+    });
+  });
+}
+
+// ---- paste this inside your existing <script> (near other theme/init code) ----
+
+/* safe getter for surveyConfig (works whether surveyConfig exists or not) */
+function getSurveyConfigSafe(){
+  return (typeof getSurveyConfig === 'function') ? getSurveyConfig() : (window.surveyConfig || {});
+}
+
+/* Apply card background mode (transparent or normal) based on surveyConfig.transparentBackground */
+function applyCardBackgroundMode() {
+  const cfg = getSurveyConfigSafe();
+  const root = document.documentElement;
+
+  const transparent = !!cfg.transparentBackground; // true/false
+
+  if (transparent) {
+    // Transparent mode: remove background + shadow + border
+    root.style.setProperty('--card-bg', 'transparent');
+    root.style.setProperty('--card-shadow', 'none');
+    root.style.setProperty('--card-border', 'none');
+    // keep radius (visual shape) but if you prefer to remove radius too set to 0:
+    // root.style.setProperty('--card-radius', '0px');
+  } else {
+    // Normal mode: restore defaults (same defaults as you put in :root)
+    // If you want other defaults, change them here
+    root.style.setProperty('--card-bg', '#fff');
+    root.style.setProperty('--card-shadow', '0 2px 8px rgba(0,0,0,0.1)');
+    root.style.setProperty('--card-border', 'none');
+    root.style.setProperty('--card-radius', '8px');
+  }
+}
+
+// Call it once during initialization (after your initTheme() that sets primary color)
+applyCardBackgroundMode();
+
+// Optional: expose helper to toggle from console if you want quick testing
+window.toggleSurveyCardBackground = function(val){
+  const cfg = getSurveyConfigSafe();
+  cfg.transparentBackground = val === undefined ? !cfg.transparentBackground : !!val;
+  applyCardBackgroundMode();
+  // If your questions.js expects surveyConfig to be global, sync it back:
+  window.surveyConfig = cfg;
+};
+
+/* Render a question */
+function loadQuestion(index){
+  const q = questionQueue[index] || {};
+  optionsEl.innerHTML = '';
+  clearComment();
+  destroyEmbeddedMediaInstances();
+  destroyCurrentVimeo();
+
+  currentActiveHref = null;
+  currentActiveTarget = null;
+
+  currentWaitingText = (q && q.waitingbutton && String(q.waitingbutton).trim()) ? q.waitingbutton.trim() : DEFAULT_WAITING_TEXT;
+  currentWaitingSub = (q && q.waitingbuttonSub && String(q.waitingbuttonSub).trim()) ? q.waitingbuttonSub.trim() : '';
+  currentActiveNextMain = null;
+  currentActiveNextSub = null;
+  currentDefaultNextMain = (index === questionQueue.length - 1) ? ( (q && q.finishButtonText) || 'Finish' ) : ( (q && q.mainButtonText) || DEFAULT_NEXT_TEXT );
+  currentDefaultNextSub = (q && q.subButtonText) ? q.subButtonText : '';
+
+  updateNextButtonState(false);
+
+// Apply stored answer placeholders before rendering rich text
+const qId = (q && (q.id || q.key)) ? (String(q.id || q.key)) : `q_auto_${index}`;
+questionEl.innerHTML = renderRich(applyAnswerPlaceholders(q.question || ''));
+
+  if (q.description && q.description.trim()){
+    questionDescEl.innerHTML = renderRich(applyAnswerPlaceholders(q.description));
+    questionDescEl.style.display = 'block';
+    questionDescEl.setAttribute('aria-hidden', 'false');
+    questionEl.setAttribute('aria-describedby', 'question-desc');
+    initEmbeddedMedia(questionDescEl).catch(()=>{});
+  } else {
+    questionDescEl.innerHTML = '';
+    questionDescEl.style.display = 'none';
+    questionDescEl.setAttribute('aria-hidden', 'true');
+    questionEl.removeAttribute('aria-describedby');
+  }
+
+  const mediaObj = normalizeMedia(q);
+  const cfg = getSurveyConfig();
+  const effectiveAspect = (mediaObj && mediaObj.aspect) ? mediaObj.aspect : (cfg.defaultMediaAspect || getComputedStyle(document.documentElement).getPropertyValue('--default-media-aspect') || '16/9');
+  questionImg.style.aspectRatio = effectiveAspect;
+  videoWrapper.style.aspectRatio = effectiveAspect;
+
+  if (mediaObj) {
+    if (mediaObj.type === 'vimeo' && mediaObj.src) {
+      const vid = parseVimeoId(mediaObj.src);
+      if (vid) {
+        createVideoMedia(vid, mediaObj.poster || null, effectiveAspect);
+      } else {
+        if (mediaObj.src) {
+          questionImg.src = mediaObj.src;
+          questionImg.style.display = 'block';
+          questionImg.onerror = () => { questionImg.style.display = 'none'; };
+        }
+      }
+    } else if (mediaObj.type === 'video') {
+      destroyCurrentVimeo();
+      videoWrapper.style.aspectRatio = effectiveAspect;
+      const container = document.createElement('div');
+      container.style.width = '100%';
+      container.style.height = '100%';
+      container.style.position = 'relative';
+
+      const poster = document.createElement('img');
+      poster.className = 'video-poster';
+      poster.alt = 'Video poster';
+      poster.loading = 'lazy';
+      poster.style.display = 'none';
+      poster.style.width = '100%';
+      poster.style.height = '100%';
+      poster.style.objectFit = 'cover';
+
+      const playBtn = document.createElement('button');
+      playBtn.className = 'poster-play';
+      playBtn.setAttribute('aria-label', 'Play video');
+      playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+      playBtn.style.display = 'none';
+
+      const video = document.createElement('video');
+      video.style.width = '100%';
+      video.style.height = '100%';
+      video.controls = true;
+      video.preload = 'none';
+      video.style.display = 'none';
+      video.playsInline = true;
+
+      video.src = mediaObj.src || '';
+      if (mediaObj.poster) {
+        poster.src = mediaObj.poster;
+        poster.style.display = 'block';
+        playBtn.style.display = 'flex';
+        poster.onerror = () => {
+          poster.style.display = 'none';
+          playBtn.style.display = 'none';
+        };
+      } else {
+        poster.style.display = 'none';
+        playBtn.style.display = 'none';
+        video.style.display = 'block';
+      }
+
+      container.appendChild(poster);
+      container.appendChild(playBtn);
+      container.appendChild(video);
+      videoWrapper.innerHTML = '';
+      videoWrapper.appendChild(container);
+      videoWrapper.style.display = 'block';
+      videoWrapper.setAttribute('aria-hidden', 'false');
+
+      mediaInstance = { container, poster, playBtn, video };
+      const playHandler = async () => {
+        try { gsap.killTweensOf(playBtn); gsap.killTweensOf(poster); } catch(e){}
+        gsap.to(playBtn, { duration: 0.36, scale: 1.7, opacity: 0, ease: "power2.out" });
+        gsap.to(poster, {
+          duration: 0.48,
+          scale: 1.03,
+          opacity: 0,
+          ease: "power2.out",
+          onComplete: async () => {
+            try { playBtn.style.display = 'none'; } catch(e){}
+            try { poster.style.display = 'none'; } catch(e){}
+            video.style.display = 'block';
+            try { await video.play(); } catch(e){}
+          }
+        });
+      };
+      playBtn.addEventListener('click', playHandler);
+      poster.addEventListener('click', playHandler);
+    } else if (mediaObj.type === 'image' && mediaObj.src) {
+      questionImg.src = mediaObj.src;
+      questionImg.style.display = 'block';
+      questionImg.onerror = () => { questionImg.style.display = 'none'; };
+    }
+  } else {
+    questionImg.style.display = 'none';
+    videoWrapper.style.display = 'none';
+  }
+
+  /* Render answers */
+  if (q.type === 'choice'){
+    (q.options || []).forEach(opt => {
+      const btn = document.createElement('div');
+      btn.className = 'option-btn';
+
+      // determine canonical key for stored answer: opt.key || q.id || q_auto_index
+      const qIdForOpts = qId || (`q_auto_${index}`);
+      const optKey = opt.key ? String(opt.key) : qIdForOpts;
+      const optValue = (opt.value != null) ? String(opt.value) : String(opt.text || '');
+
+      // save meta for later storage
+      btn.dataset.answerKey = optKey;
+      btn.dataset.answerValue = optValue;
+
+      // display text with placeholders applied (so option label can also reference earlier answers)
+      btn.textContent = applyAnswerPlaceholders(opt.text || optValue);
+
+      if (opt.comment) btn.dataset.comment = opt.comment;
+      if (opt.buttontext) {
+        try {
+          const parsed = typeof opt.buttontext === 'string' ? { main: opt.buttontext } : opt.buttontext;
+          if (parsed.main) btn.dataset.buttontextMain = parsed.main;
+          if (parsed.sub) btn.dataset.buttontextSub = parsed.sub;
+        } catch(e){
+          btn.dataset.buttontextMain = String(opt.buttontext);
+        }
+      }
+      if (opt.href) {
+        const href = typeof opt.href === 'string' ? opt.href.trim() : null;
+        if (href) btn.dataset.href = href;
+      }
+      if (opt.target) btn.dataset.target = opt.target;
+
+      if (opt.nestedQuestions && Array.isArray(opt.nestedQuestions) && opt.nestedQuestions.length) {
+        try { btn.dataset.nested = JSON.stringify(opt.nestedQuestions); } catch(e){}
+      }
+
+      btn.addEventListener('click', ()=> {
+        if (btn.dataset.nested) {
+          try { const parsed = JSON.parse(btn.dataset.nested); insertNestedQuestions(parsed); } catch(e){}
+        }
+        selectChoice(btn);
+      }, { once:true });
+      optionsEl.appendChild(btn);
+    });
+  }
+  else if (q.type === 'input'){
+    (q.inputs || []).forEach((inpItem, inpIndex)=> {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'input-wrapper';
+
+      const input = document.createElement('input');
+      input.placeholder = applyAnswerPlaceholders(inpItem.placeholder || "");
+      if (inpItem.comment) input.dataset.comment = inpItem.comment;
+
+      // determine key: explicit item.key or qId + index
+      const keyForItem = inpItem.key ? String(inpItem.key) : `${qId || `q_auto_${index}`}_input${inpIndex}`;
+
+      if (inpItem.buttontext) {
+        try {
+          const parsed = typeof inpItem.buttontext === 'string' ? { main: inpItem.buttontext } : inpItem.buttontext;
+          if (parsed.main) input.dataset.buttontextMain = parsed.main;
+          if (parsed.sub) input.dataset.buttontextSub = parsed.sub;
+        } catch(e){
+          input.dataset.buttontextMain = String(inpItem.buttontext);
+        }
+      }
+
+      if (inpItem.href) {
+        const href = typeof inpItem.href === 'string' ? inpItem.href.trim() : null;
+        if (href) input.dataset.href = href;
+      }
+      if (inpItem.target) input.dataset.target = inpItem.target;
+
+      if (inpItem.nestedQuestions && Array.isArray(inpItem.nestedQuestions) && inpItem.nestedQuestions.length) {
+        try { input.dataset.nested = JSON.stringify(inpItem.nestedQuestions); } catch(e){}
+      }
+
+      // store the answer key on input for later storing
+      input.dataset.answerKey = keyForItem;
+
+      const doneBtn = document.createElement('button');
+      doneBtn.textContent = 'Done';
+
+      input.addEventListener('input', ()=>{
+        wrapper.classList.remove('error');
+        clearComment();
+        doneBtn.style.display = input.value.trim() ? 'block' : 'none';
+        if (NEXT_BUTTON_MODE === 'disabled' && !input.disabled) updateNextButtonState(false);
+      });
+
+      doneBtn.addEventListener('click', ()=>{
+        if (!input.value.trim()) return;
+        const userAnswer = input.value.trim();
+        input.disabled = true;
+        wrapper.classList.add('locked');
+        doneBtn.style.display = 'none';
+        // store answer for later personalization
+        storeAnswer(input.dataset.answerKey, userAnswer);
+
+        if (input.dataset.comment){
+          const text = insertAnswerInComment(input.dataset.comment, userAnswer);
+          // Also apply stored-answer placeholders in returned comment text
+          const finalText = applyAnswerPlaceholders(text);
+          showSuccessComment(finalText);
+        }
+        if (input.dataset.nested) {
+          try { const parsed = JSON.parse(input.dataset.nested); insertNestedQuestions(parsed); } catch(e){}
+        }
+        currentActiveNextMain = input.dataset.buttontextMain || null;
+        currentActiveNextSub = input.dataset.buttontextSub || null;
+        currentActiveHref = input.dataset.href || null;
+        currentActiveTarget = input.dataset.target || null;
+        focusNextInput(input);
+        checkAllInputsLocked();
+      });
+
+      input.addEventListener('keydown', e=>{
+        if (e.key === 'Enter'){
+          e.preventDefault();
+          if (input.value.trim()) doneBtn.click();
+        }
+      });
+
+      wrapper.appendChild(input);
+      wrapper.appendChild(doneBtn);
+      optionsEl.appendChild(wrapper);
+    });
+  }
+  else if (q.type === 'opt-in'){
+    const inputs = [];
+    (q.inputs || []).forEach((inputItem, idx)=>{
+      const wrapper = document.createElement('div');
+      wrapper.className = 'input-wrapper';
+
+      const input = document.createElement('input');
+      input.type = inputItem.type || 'text';
+      input.placeholder = applyAnswerPlaceholders(inputItem.placeholder || "");
+      if (inputItem.comment) input.dataset.comment = inputItem.comment;
+
+      // determine key for this opt-in item
+      const keyForItem = inputItem.key ? String(inputItem.key) : `${qId || `q_auto_${index}`}_optin${idx}`;
+      input.dataset.answerKey = keyForItem;
+
+      if (inputItem.buttontext) {
+        try {
+          const parsed = typeof inputItem.buttontext === 'string' ? { main: inputItem.buttontext } : inputItem.buttontext;
+          if (parsed.main) input.dataset.buttontextMain = parsed.main;
+          if (parsed.sub) input.dataset.buttontextSub = parsed.sub;
+        } catch(e){
+          input.dataset.buttontextMain = String(inputItem.buttontext);
+        }
+      }
+
+      if (inputItem.href) {
+        const href = typeof inputItem.href === 'string' ? inputItem.href.trim() : null;
+        if (href) input.dataset.href = href;
+      }
+      if (inputItem.target) input.dataset.target = inputItem.target;
+
+      if (inputItem.nestedQuestions && Array.isArray(inputItem.nestedQuestions) && inputItem.nestedQuestions.length) {
+        try { input.dataset.nested = JSON.stringify(inputItem.nestedQuestions); } catch(e){}
+      }
+
+      const doneBtn = document.createElement('button');
+      doneBtn.textContent = 'Done';
+
+      input.addEventListener('input', ()=>{
+        wrapper.classList.remove('error');
+        clearComment();
+        doneBtn.style.display = input.value.trim() ? 'block' : 'none';
+        if (NEXT_BUTTON_MODE === 'disabled' && !input.disabled) updateNextButtonState(false);
+      });
+
+      doneBtn.addEventListener('click', async ()=>{
+        const val = input.value.trim();
+        if (!val){ doneBtn.style.display = 'none'; return; }
+
+        let result;
+        if (input.type === 'email') result = validateEmail(val);
+        else result = validateName(val);
+
+        if (!result.valid){
+          wrapper.classList.add('error');
+          showErrorComment(result.message);
+          doneBtn.style.display = 'none';
+          return;
+        }
+
+        input.disabled = true;
+        wrapper.classList.add('locked');
+        doneBtn.style.display = 'none';
+
+        // store this opt-in value immediately
+        storeAnswer(input.dataset.answerKey, val);
+
+        if (input.dataset.buttontextMain) currentActiveNextMain = input.dataset.buttontextMain;
+        if (input.dataset.buttontextSub) currentActiveNextSub = input.dataset.buttontextSub;
+
+        if (input.dataset.href && !currentActiveHref) {
+          currentActiveHref = input.dataset.href;
+          currentActiveTarget = input.dataset.target || null;
+        }
+
+        if (input.dataset.nested) {
+          try { const parsed = JSON.parse(input.dataset.nested); insertNestedQuestions(parsed); } catch(e){}
+        }
+
+        if (input.dataset.comment){
+          const text = insertAnswerInComment(input.dataset.comment, val);
+          const finalText = applyAnswerPlaceholders(text);
+          showSuccessComment(finalText);
+        }
+
+        focusNextInput(input);
+
+        if (inputs.every(i => i.input.disabled)){
+          showSuccessComment('processing. . .');
+          setNextDuringSave(true);
+
+          const nameVal = inputs.find(it => it.input.type !== 'email').input.value.trim();
+          const emailVal = (inputs.find(it => it.input.type === 'email') || inputs[0]).input.value.trim();
+
+          const resolvedSheetName = (q && (q.sheetName || q.sheet || q.optInSheetName)) ? (q.sheetName || q.sheet || q.optInSheetName) : null;
+          const resultSave = await saveLeadToSheet(nameVal, emailVal, resolvedSheetName);
+
+          if (resultSave.ok){
+            showSuccessComment('finished. . . Thank you!');
+            if (!currentActiveHref && q && q.nextHref) {
+              currentActiveHref = q.nextHref;
+              currentActiveTarget = q.nextTarget || null;
+            }
+            updateNextButtonState(true);
+          } else {
+            showErrorComment(resultSave.message || 'Could not process!');
+            if (!currentActiveHref && q && q.nextHref) {
+              currentActiveHref = q.nextHref;
+              currentActiveTarget = q.nextTarget || null;
+            }
+            updateNextButtonState(true);
+          }
+          setNextDuringSave(false);
+        }
+      });
+
+      input.addEventListener('keydown', e=>{
+        if (e.key === 'Enter'){
+          e.preventDefault();
+          if (input.value.trim()){
+            doneBtn.click();
+          }
+        }
+      });
+
+      wrapper.appendChild(input);
+      wrapper.appendChild(doneBtn);
+      optionsEl.appendChild(wrapper);
+      inputs.push({input, wrapper, doneBtn});
+    });
+  }
+
+  /* ORDERING logic: place components in sequence based on question keys */
+  const moveNodes = [videoWrapper, questionImg, questionEl, questionDescEl, optionsEl, commentBox, nextBtn];
+  moveNodes.forEach(n => { if (n && n.parentNode === surveyCard) surveyCard.removeChild(n); });
+
+  const orderKeys = Array.isArray(Object.keys(q)) ? Object.keys(q) : [];
+  const appended = new Set();
+  const appendComponent = (name) => {
+    if (appended.has(name)) return;
+    appended.add(name);
+    switch(name){
+      case 'media':
+        if (mediaObj && (mediaObj.type === 'vimeo' || mediaObj.type === 'video')) {
+          surveyCard.appendChild(videoWrapper);
+        } else if (mediaObj && mediaObj.type === 'image') {
+          surveyCard.appendChild(questionImg);
+        }
+        break;
+      case 'question':
+        surveyCard.appendChild(questionEl);
+        break;
+      case 'description':
+        surveyCard.appendChild(questionDescEl);
+        break;
+      case 'options':
+        surveyCard.appendChild(optionsEl);
+        break;
+      case 'comment':
+        surveyCard.appendChild(commentBox);
+        break;
+      case 'button':
+        surveyCard.appendChild(nextBtn);
+        break;
+    }
+  };
+
+  const mediaKeys = new Set(['media','image','vimeo','vimeoposter','vimeoPoster','video']);
+  const questionKeys = new Set(['question','q']);
+  const descriptionKeys = new Set(['description','desc']);
+  const optionsKeys = new Set(['options','choices','inputs']);
+  const commentKeys = new Set(['comment','comments']);
+  const buttonKeys = new Set(['button','nextbtn','mainbuttontext','subbuttontext','nexthref','finishbuttontext','completionhref','nexttarget','mainbuttonhref','buttontext','buttontextmain','buttontextsub']);
+
+  for (let key of orderKeys) {
+    const lk = String(key).toLowerCase();
+    if (mediaKeys.has(lk)) appendComponent('media');
+    else if (questionKeys.has(lk)) appendComponent('question');
+    else if (descriptionKeys.has(lk)) appendComponent('description');
+    else if (optionsKeys.has(lk)) appendComponent('options');
+    else if (commentKeys.has(lk)) appendComponent('comment');
+    else if (buttonKeys.has(lk)) appendComponent('button');
+  }
+
+  ['media','question','description','options','comment','button'].forEach(c => appendComponent(c));
+
+  const hasAnswers = questionHasAnswers(q);
+  if (!hasAnswers) {
+    if (q.mainButtonText || q.buttontextMain || q.buttontext) {
+      currentActiveNextMain = q.mainButtonText || q.buttontextMain || (typeof q.buttontext === 'string' ? q.buttontext : null);
+    } else currentActiveNextMain = currentDefaultNextMain;
+
+    if (q.subButtonText || q.buttontextSub) {
+      currentActiveNextSub = q.subButtonText || q.buttontextSub || '';
+    } else currentActiveNextSub = currentDefaultNextSub;
+
+    if (q.nextHref) {
+      currentActiveHref = q.nextHref;
+      currentActiveTarget = q.nextTarget || null;
+    }
+
+    updateNextButtonState(true);
+  } else {
+    updateNextButtonState(false);
+  }
+
+  if (!currentDefaultNextMain) currentDefaultNextMain = (index === questionQueue.length - 1) ? 'Finish' : DEFAULT_NEXT_TEXT;
+
+  setTimeout(()=>{
+    const firstInput = optionsEl.querySelector('.input-wrapper input:not([disabled])');
+    if (firstInput) firstInput.focus();
+  }, 60);
+}
+
+/* choice select handler */
+function selectChoice(btn){
+  btn.classList.add('selected');
+  // store selected answer for personalization: uses dataset.answerKey & dataset.answerValue
+  try {
+    const k = btn.dataset.answerKey || null;
+    const v = (btn.dataset.answerValue != null) ? btn.dataset.answerValue : btn.textContent;
+    if (k) storeAnswer(k, v);
+  } catch(e){}
+
+  if (btn.dataset.comment){
+    // immediate comment substitution uses {answer} for the chosen value and {answers.KEY} for previous stored answers
+    const immediate = insertAnswerInComment(btn.dataset.comment, btn.dataset.answerValue || btn.textContent);
+    const finalComment = applyAnswerPlaceholders(immediate);
+    showSuccessComment(finalComment);
+  }
+
+  currentActiveNextMain = btn.dataset.buttontextMain || (btn.dataset.buttontext ? btn.dataset.buttontext : null);
+  currentActiveNextSub = btn.dataset.buttontextSub || null;
+
+  currentActiveHref = btn.dataset.href || null;
+  currentActiveTarget = btn.dataset.target || null;
+
+  updateNextButtonState(true);
+  document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
+}
+
+
+/* generic input-type utils */
+function checkAllInputsLocked(){
+  const allLocked = [...document.querySelectorAll('.input-wrapper input')].every(i => i.disabled);
+  if (allLocked) updateNextButtonState(true);
+}
+
+/* navigation */
+nextBtn.addEventListener('click', ()=>{
+
+  // Ensure user sees content from the top after clicking Next
+  bringPageToTop(true);
+
+  const currQ = questionQueue[currentQuestionIndex] || {};
+  const cfg = getSurveyConfig();
+
+  if (currentActiveHref) {
+    const target = currentActiveTarget || '_self';
+    try {
+      window.open(currentActiveHref, target);
+    } catch(e){
+      window.location.href = currentActiveHref;
+    }
+    return;
+  }
+
+  if (currQ && currQ.nextHref) {
+    const tgt = currQ.nextTarget || '_self';
+    try { window.open(currQ.nextHref, tgt); } catch(e){ window.location.href = currQ.nextHref; }
+    return;
+  }
+
+  const completionHref = (currQ.completionHref && String(currQ.completionHref).trim()) ? String(currQ.completionHref).trim() : (cfg.completionHref && String(cfg.completionHref).trim() ? String(cfg.completionHref).trim() : null);
+  if (currentQuestionIndex === questionQueue.length - 1 && completionHref) {
+    window.location.href = completionHref;
+    return;
+  }
+
+  currentQuestionIndex++;
+  if (currentQuestionIndex < questionQueue.length){
+    loadQuestion(currentQuestionIndex);
+  } else {
+    surveyCard.innerHTML = `
+      <h2 style="color:var(--primary-color); text-align:center; margin:0;">Thank You!</h2>
+      <p style="text-align:center; color:var(--text-color-secondary); margin-top:8px;">We appreciate your responses.</p>
+    `;
+  }
+});
+
+/* start */
+(function ensureQueue(){
+  if (typeof questions !== 'undefined' && Array.isArray(questions)) {
+    questionQueue = questions.slice();
+  }
+})();
+updateNextButtonState(false);
+loadQuestion(currentQuestionIndex);
+</script>
+</body>
+</html>
